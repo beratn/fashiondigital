@@ -1,4 +1,10 @@
 package com.example.models
 
-class SpeechModel {
-}
+import java.time.LocalDate
+
+class SpeechModel(
+val speaker: String,
+val topic: String,
+val date: LocalDate,
+val words: Int
+)
