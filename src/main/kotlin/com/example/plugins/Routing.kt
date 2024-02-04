@@ -1,12 +1,11 @@
 package com.example.plugins
 
-import com.example.models.SpeechModel
+import com.example.services.SpeechProcessor
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.net.URL
 
 fun Application.configureRouting() {
     install(StatusPages) {
@@ -16,41 +15,18 @@ fun Application.configureRouting() {
     }
     routing {
         get("/") {
-
-            val speechesByUrl = call.request.queryParameters.entries()
+            val urls = call.request.queryParameters.entries()
                 .filter { it.key.startsWith("url") }
                 .flatMap { it.value }
-                .mapNotNull { urlString ->
-                    try {
-                        URL(urlString).openStream().use { inputStream ->
-                            readCsv(inputStream)
-                        }
-                    } catch (e: Exception) {
-                        null
-                    }
-                }.flatten()
+                .toList()
 
-            val mostSpeeches = speechesByUrl.groupingBy { it.speaker }
-                .eachCount()
-                .maxByOrNull { it.value }
-                ?.key
-
-            val mostSecuritySpeeches = speechesByUrl.filter { it.topic.lowercase() == "homeland security" }
-                .groupingBy { it.speaker }
-                .eachCount()
-                .maxByOrNull { it.value }
-                ?.key
-
-            val leastWordy = speechesByUrl.groupBy { it.speaker }
-                .mapValues { (_, speeches) -> speeches.sumOf { it.words } }
-                .minByOrNull { it.value }
-                ?.key
-
-            call.respond(HttpStatusCode.OK, mapOf(
-                "mostSpeeches" to mostSpeeches,
-                "mostSecurity" to mostSecuritySpeeches,
-                "leastWordy" to leastWordy
-            ))
+            val uniqueUrls = urls.distinct()
+            if (uniqueUrls.size != urls.size) {
+                //throw IllegalArgumentException("The same URL cannot be used more than once.")
+            }
+            val speechProcessor = SpeechProcessor()
+            val result = speechProcessor.process(urls)
+            call.respond(HttpStatusCode.OK, result)
         }
     }
 }
