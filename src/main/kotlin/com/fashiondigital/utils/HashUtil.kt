@@ -1,9 +1,9 @@
-package com.example.utils
+package com.fashiondigital.utils
 
 import java.security.MessageDigest
 
-class HashUtil {
-    fun hashUrl(url: String): String {
+open class HashUtil {
+    open fun hashUrl(url: String): String {
         val messageDigest = MessageDigest.getInstance("SHA-256")
         val hashBytes = messageDigest.digest(url.toByteArray(Charsets.UTF_8))
         return bytesToHex(hashBytes)

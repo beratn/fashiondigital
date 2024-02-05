@@ -1,4 +1,4 @@
-package com.example.plugins
+package com.fashiondigital.plugins
 
 import io.ktor.http.*
 import io.ktor.server.application.*

@@ -1,17 +1,22 @@
-package com.example.services
+package com.fashiondigital.services
 
-import com.example.configs.ConfigProperties
-import com.example.models.SpeechModel
-import com.example.utils.CsvUtil
-import com.example.utils.HashUtil
+import com.fashiondigital.configs.ConfigProperties
+import com.fashiondigital.models.SpeechModel
+import com.fashiondigital.utils.CsvUtil
+import com.fashiondigital.utils.HashUtil
 import java.net.URL
-import java.util.*
+import java.util.Locale
 
 class SpeechProcessor {
-    private val csvUtil = CsvUtil()
-    private val redisClient = RedisClient()
-    private val speechCache = SpeechCache(redisClient)
-    private val hashUtil = HashUtil()
+    private val csvUtil: CsvUtil
+    private val speechCache: SpeechCache
+    private val hashUtil: HashUtil
+
+    constructor(csvUtil: CsvUtil, speechCache: SpeechCache, hashUtil: HashUtil) {
+        this.speechCache = speechCache
+        this.hashUtil = hashUtil
+        this.csvUtil = csvUtil
+    }
 
     fun process(urls: List<String>): Map<String, String?> {
         val speechesByUrl = mutableListOf<SpeechModel>()
@@ -20,7 +25,7 @@ class SpeechProcessor {
         urls.forEach { url ->
             val cachedResult = speechCache.getCachedSpeechModels(hashUtil.hashUrl(url))
 
-            if (cachedResult != null) {
+            if (cachedResult != null && cachedResult.orEmpty().isNotEmpty()) {
                 speechesByUrl.addAll(cachedResult)
             } else {
                 newlyFetchedUrls.add(url)
@@ -30,9 +35,15 @@ class SpeechProcessor {
         if (newlyFetchedUrls.isNotEmpty()) {
             newlyFetchedUrls.forEach { url ->
                 val modelResults = fetchSpeech(url) ?: return@forEach
-                speechesByUrl.addAll(modelResults)
-                speechCache.cacheSpeechModels(hashUtil.hashUrl(url), modelResults)
+                if (modelResults.isNotEmpty()) {
+                    speechesByUrl.addAll(modelResults)
+                    speechCache.cacheSpeechModels(hashUtil.hashUrl(url), modelResults)
+                }
             }
+        }
+
+        if (speechesByUrl.isEmpty()) {
+            return emptyMap<String, String>()
         }
 
         val mostSpeeches = calculateMostSpeeches(speechesByUrl)
@@ -46,7 +57,7 @@ class SpeechProcessor {
         )
     }
 
-    private fun fetchSpeech(urlString: String): List<SpeechModel>? {
+    fun fetchSpeech(urlString: String): List<SpeechModel>? {
         return try {
             URL(urlString).openStream().use { inputStream ->
                 csvUtil.readCsv(inputStream)

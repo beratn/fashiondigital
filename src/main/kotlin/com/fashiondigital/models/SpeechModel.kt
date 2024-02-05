@@ -1,4 +1,4 @@
-package com.example.models
+package com.fashiondigital.models
 
 import java.time.LocalDate
 

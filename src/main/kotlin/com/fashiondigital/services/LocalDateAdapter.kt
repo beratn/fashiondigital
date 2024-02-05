@@ -1,4 +1,4 @@
-package com.example.services
+package com.fashiondigital.services
 
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader

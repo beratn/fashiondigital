@@ -1,13 +1,12 @@
-package com.example.services
+package com.fashiondigital.services
 
-import com.example.configs.ConfigProperties
-import com.example.models.SpeechModel
-import com.google.gson.Gson
+import com.fashiondigital.configs.ConfigProperties
+import com.fashiondigital.models.SpeechModel
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import java.time.LocalDate
 
-class SpeechCache(private val redisClient: RedisClient) {
+open class SpeechCache(private val redisClient: RedisClient) {
     private val cacheEnabled = ConfigProperties.cacheResults
     private val gson = GsonBuilder()
         .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
@@ -22,7 +21,7 @@ class SpeechCache(private val redisClient: RedisClient) {
         redisClient.use { it.set(urlHash, jsonString) }
     }
 
-    fun getCachedSpeechModels(urlHash: String): List<SpeechModel>? {
+    open fun getCachedSpeechModels(urlHash: String): List<SpeechModel>? {
         if (!cacheEnabled) {
             return null
         }

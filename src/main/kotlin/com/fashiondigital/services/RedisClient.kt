@@ -1,6 +1,6 @@
-package com.example.services
+package com.fashiondigital.services
 
-import com.example.configs.ConfigProperties
+import com.fashiondigital.configs.ConfigProperties
 import redis.clients.jedis.Jedis
 
 class RedisClient {

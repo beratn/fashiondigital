@@ -15,7 +15,7 @@
         <slf4j_version>2.0.9</slf4j_version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <main.class>com.example.ApplicationKt</main.class>
+        <main.class>com.fashiondigital.ApplicationKt</main.class>
     </properties>
     <repositories>
     </repositories>
@@ -86,15 +86,46 @@
             <version>5.0.2</version>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito.kotlin</groupId>
+            <artifactId>mockito-kotlin</artifactId>
+            <version>4.1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-server-tests-jvm</artifactId>
             <version>${ktor_version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>${kotlin_version}</version>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-test-junit</artifactId>
+        <version>${kotlin_version}</version>
+        <scope>test</scope>
+    </dependency>
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.12.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.4.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.4.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
